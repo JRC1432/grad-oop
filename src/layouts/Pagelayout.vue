@@ -40,7 +40,7 @@
             clickable
             v-ripple
             tag="a"
-            to="/stats"
+            to="/dashboard"
             class="rounded-borders q-my-xs"
             active-class="my-menu-link"
           >
@@ -84,7 +84,7 @@
             clickable
             v-ripple
             tag="a"
-            to="/viewscholar"
+            to="/scholars"
             class="rounded-borders q-my-xs"
             active-class="my-menu-link"
           >

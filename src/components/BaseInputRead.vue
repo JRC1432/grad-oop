@@ -10,10 +10,7 @@
       outlined
       dense
       hide-bottom-space
-      :type="type"
-      :mask="mask"
-      :placeholder="placeholder"
-      lazy-rules="ondemand"
+      readonly
     />
   </div>
 </template>
@@ -32,9 +29,6 @@ const props = defineProps({
   title: { type: String, default: 'label' },
   modelValue: { type: [String, Number], default: '' },
   name: { type: String, default: '' },
-  mask: { type: String, default: '' },
-  placeholder: { type: String, default: '' },
-  type: { type: String, default: 'text' },
   rules: {
     type: Array,
     default: () => [],

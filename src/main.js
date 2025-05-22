@@ -8,6 +8,8 @@ import Vue3Lottie from 'vue3-lottie'
 import axiosMain from 'axios'
 import './assets/light.scss'
 import './assets/dark.scss'
+
+import Vue3Autocounter from 'vue3-autocounter'
 import PasswordMeter from 'vue-simple-password-meter'
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -74,6 +76,7 @@ router.beforeEach(async (to, from, next) => {
 
 myApp.use(router)
 myApp.use(Vue3Lottie)
+myApp.use(Vue3Autocounter)
 myApp.use(PasswordMeter)
 myApp.use(Quasar, {
   plugins: { Notify, Loading, Dialog, LoadingBar }, // import Quasar plugins and add here

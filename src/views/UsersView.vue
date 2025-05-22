@@ -19,16 +19,17 @@
     <q-card class="rounded-borders-20" style="width: 700px; max-width: 80vw">
       <form id="saveUserForm" @submit.prevent.stop="saveUser">
         <q-toolbar>
-          <IconUserPlus :size="30" stroke-width="2" />
+          <IconUser :size="30" stroke-width="2" />
 
           <q-toolbar-title
-            ><span class="text-weight-bold" color="primary">NEW</span> User Profile</q-toolbar-title
+            ><span class="text-weight-bold" color="primary">{{ isEditing ? 'Edit' : 'New' }}</span>
+            User Profile</q-toolbar-title
           >
-          <q-btn flat round dense icon="close" @click="newUser = false" />
+          <q-btn flat round dense icon="close" @click="cancelUser" />
         </q-toolbar>
 
         <q-card-section>
-          <div class="text-h6">New User Personal Informartions</div>
+          <div class="text-h6">{{ isEditing ? 'Edit' : 'New' }} User Personal Information</div>
 
           <div class="q-pa-md">
             <div class="row row_width q-col-gutter-xs">
@@ -107,12 +108,12 @@
                 </div>
               </div>
               <div class="col-xs-12">
-                <BaseSelect
+                <BaseBasicSelect
                   ref="refuserlevel"
                   name="userlevel"
                   title="User Access Level"
                   :options="userlvl"
-                  v-model="state.userlevel"
+                  v-model="userlevel"
                   :rules="[isSelected]"
                 />
               </div>
@@ -132,7 +133,8 @@
 import BaseBtn from '../components/BaseBtn.vue'
 import BaseTable from '../components/BaseTable.vue'
 import BaseInput from '../components/BaseInput.vue'
-import BaseSelect from '../components/BaseSelect.vue'
+
+import BaseBasicSelect from '../components/BaseBasicSelect.vue'
 import { notifySuccess, notifyError } from '../utils/notify'
 import {
   requiredField,
@@ -142,7 +144,7 @@ import {
 } from '../utils/validation'
 
 import { ref, onMounted, reactive, inject, computed } from 'vue'
-import { IconUserPlus } from '@tabler/icons-vue'
+import { IconUser } from '@tabler/icons-vue'
 import { useQuasar, QSpinnerGears, Notify } from 'quasar'
 import PasswordMeter from 'vue-simple-password-meter'
 
@@ -170,6 +172,9 @@ const refusername = ref(null)
 const refpassword = ref(null)
 const refconfirmpassword = ref(null)
 const refuserlevel = ref(null)
+const isEditing = ref(false)
+const editingUserId = ref(null)
+const userlevel = ref(null)
 
 const state = reactive({
   firstname: '',
@@ -177,7 +182,6 @@ const state = reactive({
   username: '',
   password: '',
   confirmpassword: '',
-  userlevel: '',
 })
 
 const columns = [
@@ -241,14 +245,30 @@ const readusers = () => {
   })
 }
 
-const cancelUser = () => {
+const resetForm = () => {
   state.firstname = ''
   state.lastname = ''
   state.username = ''
   state.password = ''
   state.confirmpassword = ''
-  state.userlevel = ''
+  userlevel.value = null
   newUser.value = false
+}
+
+const cancelUser = () => {
+  resetForm()
+  newUser.value = false
+  isEditing.value = false
+}
+
+const handleEdit = (props) => {
+  state.firstname = props.row.fname
+  state.lastname = props.row.lname
+  state.username = props.row.username
+
+  editingUserId.value = props.row.id
+  isEditing.value = true
+  newUser.value = true
 }
 
 const saveUser = async () => {
@@ -272,18 +292,33 @@ const saveUser = async () => {
     if (state.password !== state.confirmpassword) {
       notifyError('Password and Confirm Password do not match')
       return
+    }
+
+    var formData = new FormData(document.getElementById('saveUserForm'))
+
+    formData.append('creator', user.username)
+    formData.append('authid', user.id)
+    formData.append('access_level', userlevel.value)
+
+    if (isEditing.value) {
+      formData.append('userid', editingUserId.value)
+      axios.post('/users_function.php?updateuser', formData).then((response) => {
+        if (response.data == true) {
+          notifySuccess('User Updated Successfully')
+          readusers()
+          newUser.value = false
+          resetForm()
+        } else {
+          notifyError('User Update Failed')
+        }
+      })
     } else {
-      var formData = new FormData(document.getElementById('saveUserForm'))
-
-      formData.append('creator', user.username)
-      formData.append('authid', user.id)
-
       axios.post('/users_function.php?createuser', formData).then(function (response) {
         if (response.data == true) {
           state.username = ''
           state.password = ''
           state.confirmpassword = ''
-          state.userlevel = ''
+          userlevel.value = null
           newUser.value = false
           notifySuccess('New User Created Successfully')
         } else {
@@ -292,10 +327,6 @@ const saveUser = async () => {
       })
     }
   }
-}
-
-const handleEdit = (props) => {
-  alert(props.row.id)
 }
 
 const handleDelete = (props) => {
