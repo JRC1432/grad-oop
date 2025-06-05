@@ -3,6 +3,10 @@ import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import UsersView from '../views/UsersView.vue'
 import ScholarView from '../views/ScholarView.vue'
+import SchoolView from '../views/SchoolView.vue'
+import FormsView from '../views/FormsView.vue'
+import BrochuresView from '../views/BrochuresView.vue'
+import LogView from '../views/LogView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +39,26 @@ const router = createRouter({
           path: '/scholars',
           name: 'scholars',
           component: ScholarView,
+        },
+        {
+          path: '/school',
+          name: 'school',
+          component: SchoolView,
+        },
+        {
+          path: '/forms',
+          name: 'forms',
+          component: FormsView,
+        },
+        {
+          path: '/brochure',
+          name: 'brochure',
+          component: BrochuresView,
+        },
+        {
+          path: '/log',
+          name: 'log',
+          component: LogView,
         },
       ],
     },

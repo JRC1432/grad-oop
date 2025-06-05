@@ -73,6 +73,7 @@
                   <!-- Left Column: Title -->
                   <div class="col-12 col-md">
                     <div class="text-h6 text-bold row items-center">
+                      <IconUser class="text-negative q-mr-sm" :size="40" stroke-width="2" />
                       <span
                         :class="['text-h6 text-bold', isEditing ? 'text-warning' : 'text-primary']"
                       >
@@ -242,6 +243,11 @@
 
                         <div class="col-xs-12 col-sm-6 col-md-12">
                           <div class="text-h6 text-bold q-mb-md row items-center">
+                            <IconAddressBook
+                              class="text-negative q-mr-sm"
+                              :size="40"
+                              stroke-width="2"
+                            />
                             <span class="text-h6 text-bold text-primary">Contact Information</span>
                           </div>
                           <q-separator />
@@ -347,6 +353,11 @@
                         <br />
                         <div class="col-xs-12 col-sm-6 col-md-12">
                           <div class="text-h6 text-bold q-mb-md row items-center">
+                            <IconBuilding
+                              class="text-negative q-mr-sm"
+                              :size="40"
+                              stroke-width="2"
+                            />
                             <span class="text-h6 text-bold text-primary"
                               >Previous School Informations</span
                             >
@@ -399,6 +410,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-12">
                           <div class="text-h6 text-bold q-mb-md row items-center">
+                            <IconSchool class="text-negative q-mr-sm" :size="40" stroke-width="2" />
                             <span class="text-h6 text-bold text-primary">Graduate School</span>
                           </div>
                           <q-separator />
@@ -576,6 +588,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-12">
                           <div class="text-h6 text-bold q-mb-md row items-center">
+                            <IconSchool class="text-negative q-mr-sm" :size="40" stroke-width="2" />
                             <span class="text-h6 text-bold text-primary"
                               >Scholarship Informations</span
                             >
@@ -770,123 +783,39 @@
 
   <q-dialog v-model="docxUpload" persistent>
     <q-card class="rounded-borders-20" style="width: 700px; max-width: 80vw">
-      <q-form id="bulkUploadForm" @submit.prevent.stop="bulkUploads">
-        <q-toolbar>
-          <IconFileTypeCsv :size="30" stroke-width="2" />
+      <q-toolbar>
+        <IconFileTypeCsv :size="30" stroke-width="2" />
 
-          <q-toolbar-title
-            ><span class="text-weight-bold" color="primary">CSV</span> File Upload</q-toolbar-title
-          >
+        <q-toolbar-title
+          ><span class="text-weight-bold" color="primary">CSV</span> File Upload</q-toolbar-title
+        >
 
-          <q-btn flat round dense icon="close" v-close-popup />
-        </q-toolbar>
+        <q-btn flat round dense icon="close" v-close-popup />
+      </q-toolbar>
 
-        <q-card-section>
+      <q-card-section>
+        <q-form id="bulkUploadForm" @submit.prevent.stop="bulkUploads">
           <q-card class="my-card rounded-borders-20">
             <q-card-section class="bg-primary text-white">
               <div class="text-h6">Upload Your File Here</div>
               <div class="text-subtitle2">Only CSV Documents are Allowed</div>
             </q-card-section>
             <div class="q-pa-md">
-              <q-file
-                ref="rfBulkUpload"
-                filled
+              <BaseFile
+                ref="refBulkUpload"
                 v-model="bulkuploadScholars"
                 name="bulkuploadScholars"
                 label="*CSV FILES ONLY"
-                color="primary"
-                clearable
-                counter
                 accept=".csv"
-                :rules="[isFileValid]"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="attach_file" />
-                </template>
-              </q-file>
+                :rules="[fileRules]"
+              />
             </div>
           </q-card>
           <br />
           <div class="row justify-end">
-            <BaseBtn type="submit" label="Upload" color="primary" />
+            <q-btn type="submit" label="Upload" color="primary" />
           </div>
-        </q-card-section>
-
-        <q-separator />
-      </q-form>
-    </q-card>
-  </q-dialog>
-
-  <q-dialog v-model="Docx" persistent>
-    <q-card style="min-width: 1000px; width: 1000px">
-      <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6">View Documents</div>
-        <q-space />
-
-        <q-btn rounded flat color="primary" v-close-popup>
-          <IconSquareRoundedX :size="30" stroke-width="2" />
-        </q-btn>
-      </q-card-section>
-
-      <q-separator />
-
-      <q-card-section>
-        <form id="editDocuForm" @submit.prevent.stop="addDocu">
-          <div class="col-xs-12 col-sm-6">
-            <div class="q-col-gutter-md row items-start">
-              <div class="col-xs-12">
-                <div class="q-px-sm">
-                  <span class="text-bold">Upload Files</span>
-                  <q-file
-                    ref="reffile"
-                    v-model="files"
-                    name="files"
-                    label="*PDF Only"
-                    clearable
-                    filled
-                    counter
-                    outlined
-                    dense
-                    hide-bottom-space
-                    accept=".pdf"
-                    @update:model-value="handleFileChange"
-                    :rules="[fileRules]"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="attach_file" />
-                    </template>
-                  </q-file>
-                </div>
-              </div>
-              <div class="col-xs-12">
-                <UpdateSelect
-                  ref="refFileTypes"
-                  title="File Types"
-                  name="filetypes"
-                  v-model="filetypes"
-                  :options="filetypesOptions"
-                  :onFilter="filterFilesTypes"
-                  @update:modelValue="getDescription"
-                  :rules="[isSelected]"
-                />
-              </div>
-              <div class="col-xs-12">
-                <BaseInput
-                  title="Description"
-                  name="filetypedescription"
-                  v-model="state.filetypedescription"
-                />
-              </div>
-              <div class="col-xs-12">
-                <BaseBtn label="Add New File" color="primary" type="submit" />
-              </div>
-            </div>
-          </div>
-        </form>
-      </q-card-section>
-
-      <q-card-section style="max-height: 50vh" class="scroll">
-        <ScholarsTbl :rows="rows" :columns="doxcolumns" :showfile="showFiles" />
+        </q-form>
       </q-card-section>
 
       <q-separator />
@@ -904,16 +833,22 @@ import BaseSelect from '../components/BaseSelect.vue'
 import BaseBasicSelect from '../components/BaseBasicSelect.vue'
 import UpdateSelect from '../components/UpdateSelect.vue'
 import ScholarsTbl from '../components/ScholarsTbl.vue'
-import { ref, onMounted, reactive, inject } from 'vue'
+import UpdateSelectWthOutEmit from '../components/UpdateSelectWthOutEmit.vue'
+import { ref, onMounted, reactive, inject, watch, computed } from 'vue'
 import { notifySuccess, notifyError } from '../utils/notify'
 
-import { IconFileTypeCsv, IconSquareRoundedX } from '@tabler/icons-vue'
-import { useQuasar } from 'quasar'
-import { requiredField, isSelected, isFileValid } from '../utils/validation'
+import {
+  IconListDetails,
+  IconSquareRoundedX,
+  IconFileTypePdf,
+  IconFileSearch,
+  IconFiles,
+} from '@tabler/icons-vue'
+import { useQuasar, QSpinnerGears, is } from 'quasar'
+import { requiredField, isSelected, fileRules } from '../utils/validation'
 
 import Swal from 'sweetalert2'
 import { compileScript } from 'vue/compiler-sfc'
-import jsPDF from 'jspdf'
 
 const user = inject('$user')
 const q$ = useQuasar()
@@ -922,22 +857,21 @@ const axios = inject('$axios')
 
 const tab = ref('oscholars')
 const docxUpload = ref(false)
-const Docx = ref(false)
 
 const edittab = ref('sinfo')
 
-const rows = ref([])
 const onrows = ref([])
 const gradrows = ref([])
 const termrows = ref([])
 
-// Ref Declarations
-
-const rfBulkUpload = ref(null)
+const refBulkUpload = ref(null)
+const refspasid = ref(null)
 const refStatus = ref(null)
 const refSubStatus = ref(null)
 const reffirstname = ref(null)
 const reflastname = ref(null)
+const refmiddlename = ref(null)
+const refsuffixname = ref(null)
 const refbirth = ref(null)
 const refsex = ref(null)
 const refemail = ref(null)
@@ -946,13 +880,21 @@ const refcontact = ref(null)
 const refzipcode = ref(null)
 const refblocklot = ref(null)
 const refstreet = ref(null)
+const refsubdivision = ref(null)
+const refbarangay = ref(null)
+const refdistrict = ref(null)
+const refregion = ref(null)
+const refmunicipality = ref(null)
+const refprovince = ref(null)
 const refPrevCourse = ref(null)
 const refPrevSchool = ref(null)
 const refScProg = ref(null)
 const refunits = ref(null)
 const refcouncil = ref(null)
 const refgradschool = ref(null)
+const refschoolregion = ref(null)
 const refgradcourse = ref(null)
+const refField = ref(null)
 const refduration = ref(null)
 const refForeignsemone = ref(null)
 const refForeignstartdate = ref(null)
@@ -960,6 +902,7 @@ const refForeignsemtwo = ref(null)
 const refForeignenddate = ref(null)
 const refLocalsemone = ref(null)
 const refLocalstartdate = ref(null)
+const refLocalenddate = ref(null)
 const refLocalsemtwo = ref(null)
 const refScholarshipProgram = ref(null)
 const refEntryType = ref(null)
@@ -967,7 +910,11 @@ const refacademicyear = ref(null)
 const refbatch = ref(null)
 const refgrant = ref(null)
 const reflevel = ref(null)
+const refcomp = ref(null)
 const refavailment = ref(null)
+const refotherstatus = ref(null)
+const refsemester = ref(null)
+const refyearawarded = ref(null)
 const refremarks = ref(null)
 const refserviceobligation = ref(null)
 const refresearch = ref(null)
@@ -976,10 +923,6 @@ const refgraduationdate = ref(null)
 const refhonorsawards = ref(null)
 const refdissemination = ref(null)
 const refresearchGrant = ref(null)
-const refFileTypes = ref(null)
-const reffile = ref(null)
-
-// Variables Declarations
 
 const status = ref(null)
 const substatus = ref(null)
@@ -1001,8 +944,6 @@ const currentYear = ref(null)
 const spas_academic_year = ref(null)
 const isEditing = ref(false)
 const bulkuploadScholars = ref(null)
-const files = ref(null)
-const filetypes = ref(null)
 
 const state = reactive({
   spasid: '',
@@ -1050,15 +991,12 @@ const state = reactive({
   honorsawards: '',
   dissemination: '',
   researchgrant: '',
-  filetypedescription: '',
 })
 
 const sexOptions = [
   { label: 'Male', value: 'M' },
   { label: 'Female', value: 'F' },
 ]
-
-// Columns
 
 const columns = [
   {
@@ -1110,116 +1048,77 @@ const columns = [
   },
 ]
 
-const doxcolumns = [
-  {
-    name: 'file_name',
-    required: true,
-    label: 'File Name',
-    align: 'center',
-    field: 'file_name',
-    sortable: true,
-  },
-  {
-    name: 'descriptions',
-    required: true,
-    label: 'Details',
-    align: 'center',
-    field: 'descriptions',
-    sortable: true,
-  },
-  {
-    name: 'file_description',
-    required: true,
-    label: 'File Description',
-    align: 'center',
-    field: 'file_description',
-    sortable: true,
-  },
+const readScholars = () => {
+  axios.get('/scholars_function.php?readscholar').then(function (response) {
+    onrows.value = response.data
+  })
 
-  {
-    name: 'added_on',
-    required: true,
-    label: 'Date Added',
-    align: 'center',
-    field: 'added_on',
-    sortable: true,
-  },
+  axios.get('/scholars_function.php?readgraduatescholar').then(function (response) {
+    gradrows.value = response.data
+  })
 
-  {
-    name: 'actions',
-    align: 'center',
-    label: 'Action Buttons',
-    field: '',
-    sortable: true,
-  },
-]
+  axios.get('/scholars_function.php?readtermscholar').then(function (response) {
+    termrows.value = response.data
+  })
 
-// Read Datas
+  axios.get('/scholars_function.php?readStatus').then((response) => {
+    status2 = response.data
+  })
 
-const readScholars = async () => {
-  try {
-    const [
-      resOnrows,
-      resGradrows,
-      resTermrows,
-      resStatus2,
-      resSubstatus2,
-      resZip2,
-      resPrevCourse2,
-      resPrevSchool2,
-      resScProgram2,
-      resCouncil2,
-      resGradschool2,
-      resGradcourse2,
-      resScholarshipProgram2,
-      resEntryType2,
-      resGrant2,
-      resLevel2,
-      resAvailment2,
-      resScholartype2,
-    ] = await Promise.all([
-      axios.get('/scholars_function.php?readscholar'),
-      axios.get('/scholars_function.php?readgraduatescholar'),
-      axios.get('/scholars_function.php?readtermscholar'),
-      axios.get('/scholars_function.php?readStatus'),
-      axios.get('/scholars_function.php?readSubStatus'),
-      axios.get('/scholars_function.php?readZip'),
-      axios.get('/scholars_function.php?underGradCourses'),
-      axios.get('/scholars_function.php?underGradSchool'),
-      axios.get('/scholars_function.php?readScProg'),
-      axios.get('/scholars_function.php?readcouncil'),
-      axios.get('/scholars_function.php?readGradSchool'),
-      axios.get('/scholars_function.php?readGradCourse'),
-      axios.get('/scholars_function.php?readScolarshipProgram'),
-      axios.get('/scholars_function.php?readEntryType'),
-      axios.get('/scholars_function.php?readGrant'),
-      axios.get('/scholars_function.php?readLevel'),
-      axios.get('/scholars_function.php?readAvailment'),
-      axios.get('/scholars_function.php?readScholarType'),
-    ])
+  axios.get('/scholars_function.php?readSubStatus').then((response) => {
+    substatus2 = response.data
+  })
 
-    onrows.value = resOnrows.data
-    gradrows.value = resGradrows.data
-    termrows.value = resTermrows.data
-    status2 = resStatus2.data
-    substatus2 = resSubstatus2.data
-    zip2 = resZip2.data
-    prevCourse2 = resPrevCourse2.data
-    prevSchool2 = resPrevSchool2.data
-    ScProgram2 = resScProgram2.data
-    council2 = resCouncil2.data
-    gradschool2 = resGradschool2.data
-    gradcourse2 = resGradcourse2.data
-    scholarshipProgram2 = resScholarshipProgram2.data
-    entryType2 = resEntryType2.data
-    grant2 = resGrant2.data
-    level2 = resLevel2.data
-    availment2 = resAvailment2.data
-    scholartype2 = resScholartype2.data
-  } catch (error) {
-    console.error('Error reading scholars data:', error)
-    notifyError('Failed to load scholar data')
-  }
+  axios.get('/scholars_function.php?readZip').then((response) => {
+    zip2 = response.data
+  })
+
+  axios.get('/scholars_function.php?underGradCourses').then((response) => {
+    prevCourse2 = response.data
+  })
+
+  axios.get('/scholars_function.php?underGradSchool').then((response) => {
+    prevSchool2 = response.data
+  })
+  axios.get('/scholars_function.php?readScProg').then((response) => {
+    ScProgram2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readcouncil').then((response) => {
+    council2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readGradSchool').then((response) => {
+    gradschool2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readGradCourse').then((response) => {
+    gradcourse2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readScolarshipProgram').then((response) => {
+    scholarshipProgram2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readEntryType').then((response) => {
+    entryType2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readGrant').then((response) => {
+    grant2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readLevel').then((response) => {
+    level2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readAvailment').then((response) => {
+    availment2 = response.data
+  })
+
+  axios.get('/scholars_function.php?readScholarType').then((response) => {
+    scholartype2 = response.data
+  })
 }
 
 const populateAddress = () => {
@@ -1245,6 +1144,11 @@ const populateschool = () => {
   })
 }
 
+const gradschoolLabel = computed(() => {
+  const selected = gradschoolOptions.value.find((option) => option.value === gradschool.value)
+  return selected ? selected.label : ''
+})
+
 const populateCourseField = () => {
   var formData = new FormData()
   formData.append('schoolCourse', gradcourse.value)
@@ -1262,6 +1166,10 @@ const populateScholarType = () => {
     state.serviceobligation = response.data.serv_obligation
   })
 }
+
+// const populateScholarType = () => {
+//   state.serviceobligation = scholartype.value?.field
+// }
 
 const getCurrentYear = () => {
   const currentDate = new Date()
@@ -1550,7 +1458,7 @@ const filterScholarType = (val, update) => {
 const scholarid = ref(null)
 // Other Functions
 
-const handleRowClick = async (evt, row) => {
+const handleRowClick = (evt, row) => {
   isEditing.value = true
   state.spasid = row.spas_id
   status.value = row.school_grad_status
@@ -1567,381 +1475,240 @@ const handleRowClick = async (evt, row) => {
 
   scholarid.value = row.id
 
-  const formData = new FormData()
+  var formData = new FormData()
   formData.append('scholarid', scholarid.value)
 
-  try {
-    const [resAddress, resSchools, resGradSchools, resThesis, resDateSem] = await Promise.all([
-      axios.post('/scholars_function.php?readAddressId', formData),
-      axios.post('/scholars_function.php?readSchoolsId', formData),
-      axios.post('/scholars_function.php?readGradSchoolsId', formData),
-      axios.post('/scholars_function.php?readThesisId', formData),
-      axios.post('/scholars_function.php?readDateSemId', formData),
-    ])
+  axios.post('/scholars_function.php?readAddressId', formData).then(function (response) {
+    zipcode.value = response.data.zipcode
+    state.blocklot = response.data.house_number
+    state.street = response.data.street
+    state.subdivision = response.data.subdivision
+    state.barangay = response.data.barangay
+    state.district = response.data.district
+    state.region = response.data.h_region
+    state.municipality = response.data.town
+    state.province = response.data.province
+  })
 
-    // Address data
-    const addr = resAddress.data
-    zipcode.value = addr.zipcode
-    state.blocklot = addr.house_number
-    state.street = addr.street
-    state.subdivision = addr.subdivision
-    state.barangay = addr.barangay
-    state.district = addr.district
-    state.region = addr.h_region
-    state.municipality = addr.town
-    state.province = addr.province
+  axios.post('/scholars_function.php?readSchoolsId', formData).then(function (response) {
+    prevCourse.value = response.data.current_course
+    prevschool.value = response.data.current_school
+    scprog.value = response.data.scholarship_program
+    state.units = response.data.units
+    state.batch = response.data.batch
+    entryType.value = response.data.entry_level
+    spas_academic_year.value = response.data.year
+  })
+  axios.post('/scholars_function.php?readGradSchoolsId', formData).then(function (response) {
+    council.value = response.data.council
+    gradschool.value = response.data.grad_school
+    gradcourse.value = response.data.grad_course
+    state.schoolregion = response.data.region
+    state.comp = response.data.comp
+    grant.value = response.data.grant_test
+    scholarshipProgram.value = response.data.grad_program
+    state.academicyear = response.data.award_year
+    level.value = response.data.level
+    availment.value = response.data.availment
+    state.semester = response.data.sem
+  })
 
-    // Schools data
-    const schools = resSchools.data
-    prevCourse.value = schools.current_course
-    prevschool.value = schools.current_school
-    scprog.value = schools.scholarship_program
-    state.units = schools.units
-    state.batch = schools.batch
-    entryType.value = schools.entry_level
-    spas_academic_year.value = schools.year
+  axios.post('/scholars_function.php?readThesisId', formData).then(function (response) {
+    state.research = response.data.title
+    scholartype.value = response.data.school_type
+    state.graduationdate = response.data.grad_date
+    state.honorsawards = response.data.honors
+    state.dissemination = response.data.dissemination
+    state.researchgrant = response.data.research
+    state.serviceobligation = response.data.servob
+    state.remarks = response.data.remarks
+    state.duration = response.data.duration
+    state.fields = response.data.field
+  })
 
-    // Graduate schools data
-    const gradSchools = resGradSchools.data
-    council.value = gradSchools.council
-    gradschool.value = gradSchools.grad_school
-    gradcourse.value = gradSchools.grad_course
-    state.schoolregion = gradSchools.region
-    state.comp = gradSchools.comp
-    grant.value = gradSchools.grant_test
-    scholarshipProgram.value = gradSchools.grad_program
-    state.academicyear = gradSchools.award_year
-    level.value = gradSchools.level
-    availment.value = gradSchools.availment
-    state.semester = gradSchools.sem
-
-    // Thesis data
-    const thesis = resThesis.data
-    state.research = thesis.title
-    scholartype.value = thesis.school_type
-    state.graduationdate = thesis.grad_date
-    state.honorsawards = thesis.honors
-    state.dissemination = thesis.dissemination
-    state.researchgrant = thesis.research
-    state.serviceobligation = thesis.servob
-    state.remarks = thesis.remarks
-    state.duration = thesis.duration
-    state.fields = thesis.field
-
-    // Date/Sem data
-    const dateSem = resDateSem.data
-    state.foreignsemone = dateSem.foreign_sem
-    state.foreignstartdate = dateSem.foreign_startdate
-    state.foreignsemtwo = dateSem.foreign_endsem
-    state.foreignenddate = dateSem.foreign_enddate
-    state.localsemone = dateSem.local_sem
-    state.localstartdate = dateSem.local_startdate
-    state.localsemtwo = dateSem.local_endsem
-    state.localenddate = dateSem.local_enddate
-  } catch (error) {
-    console.error('Failed to load scholar data on row click:', error)
-    notifyError('Failed to load scholar details')
-  }
+  axios.post('/scholars_function.php?readDateSemId', formData).then(function (response) {
+    state.foreignsemone = response.data.foreign_sem
+    state.foreignstartdate = response.data.foreign_startdate
+    state.foreignsemtwo = response.data.foreign_endsem
+    state.foreignenddate = response.data.foreign_enddate
+    state.localsemone = response.data.local_sem
+    state.localstartdate = response.data.local_startdate
+    state.localsemtwo = response.data.local_endsem
+    state.localenddate = response.data.local_enddate
+  })
 }
 
 const submitScholar = async () => {
-  const validations = await Promise.all([
-    reffirstname.value.validate(),
-    reflastname.value.validate(),
-    refbirth.value.validate(),
-    refsex.value.validate(),
-    refemail.value.validate(),
-    refalemail.value.validate(),
-    refcontact.value.validate(),
-    refzipcode.value.validate(),
-    refblocklot.value.validate(),
-    refstreet.value.validate(),
-    refPrevCourse.value.validate(),
-    refPrevSchool.value.validate(),
-    refScProg.value.validate(),
-    refunits.value.validate(),
-    refcouncil.value.validate(),
-    refgradschool.value.validate(),
-    refgradcourse.value.validate(),
-    refduration.value.validate(),
-    refScholarshipProgram.value.validate(),
-    refEntryType.value.validate(),
-    refacademicyear.value.validate(),
-    refbatch.value.validate(),
-    refgrant.value.validate(),
-    reflevel.value.validate(),
-    refavailment.value.validate(),
-    refserviceobligation.value.validate(),
-    refscholartype.value.validate(),
-    refremarks.value.validate(),
-  ])
+  const isFirstNameValid = await reffirstname.value.validate()
+  const isLastNameValid = await reflastname.value.validate()
+  const isBirthdayValid = await refbirth.value.validate()
+  const isSexValid = await refsex.value.validate()
+  const isEmailValid = await refemail.value.validate()
+  const isAlEmailValid = await refalemail.value.validate()
+  const isContactValid = await refcontact.value.validate()
+  const isZipcodeValid = await refzipcode.value.validate()
+  const isBlocklotValid = await refblocklot.value.validate()
+  const isStreetValid = await refstreet.value.validate()
+  const isPrevCourseValid = await refPrevCourse.value.validate()
+  const isPrevSchoolValid = await refPrevSchool.value.validate()
+  const isScProgValid = await refScProg.value.validate()
+  const isUnitsValid = await refunits.value.validate()
+  const isCouncilValid = await refcouncil.value.validate()
+  const isGradSchoolValid = await refgradschool.value.validate()
+  const isGradCourseValid = await refgradcourse.value.validate()
+  const isDurationValid = await refduration.value.validate()
+  const isScholarshipProgramValid = await refScholarshipProgram.value.validate()
+  const isEntryTypeValid = await refEntryType.value.validate()
+  const isAcademicyearValid = await refacademicyear.value.validate()
+  const isBatchValid = await refbatch.value.validate()
+  const isGrantValid = await refgrant.value.validate()
+  const isLevelValid = await reflevel.value.validate()
+  const isAvailmentValid = await refavailment.value.validate()
+  const isServiceObligationValid = await refserviceobligation.value.validate()
+  const isScholarTypeValid = await refscholartype.value.validate()
+  const isRemarksValid = await refremarks.value.validate()
 
-  if (validations.includes(false)) {
+  if (
+    !isFirstNameValid ||
+    !isLastNameValid ||
+    !isBirthdayValid ||
+    !isSexValid ||
+    !isEmailValid ||
+    !isAlEmailValid ||
+    !isContactValid ||
+    !isZipcodeValid ||
+    !isBlocklotValid ||
+    !isStreetValid ||
+    !isPrevCourseValid ||
+    !isPrevSchoolValid ||
+    !isScProgValid ||
+    !isUnitsValid ||
+    !isCouncilValid ||
+    !isGradSchoolValid ||
+    !isGradCourseValid ||
+    !isDurationValid ||
+    !isScholarshipProgramValid ||
+    !isEntryTypeValid ||
+    !isAcademicyearValid ||
+    !isBatchValid ||
+    !isGrantValid ||
+    !isLevelValid ||
+    !isAvailmentValid ||
+    !isServiceObligationValid ||
+    !isScholarTypeValid ||
+    !isRemarksValid
+  ) {
     notifyError('Please fill all required fields')
-    return
-  }
+  } else {
+    var formData = new FormData(document.getElementById('submitScholarForm'))
 
-  const formData = new FormData(document.getElementById('submitScholarForm'))
+    formData.append('sex', sex.value)
+    formData.append('prevschool', prevschool.value)
+    formData.append('prevCourse', prevCourse.value)
+    formData.append('scprog', scprog.value)
+    formData.append('council', council.value)
+    formData.append('scholarshipProgram', scholarshipProgram.value)
+    formData.append('grant', grant.value)
+    formData.append('level', level.value)
+    formData.append('availment', availment.value)
+    formData.append('scholartype', scholartype.value)
+    formData.append('entryType', entryType.value)
+    formData.append('gradschool', gradschool.value)
+    formData.append('gradcourse', gradcourse.value)
+    formData.append('yearawarded', spas_academic_year.value)
+    formData.append('usercreator', user.username)
+    formData.append('scholarid', scholarid.value)
+    formData.append('status', status.value)
+    formData.append('substatus', substatus.value)
 
-  formData.append('sex', sex.value)
-  formData.append('prevschool', prevschool.value)
-  formData.append('prevCourse', prevCourse.value)
-  formData.append('scprog', scprog.value)
-  formData.append('council', council.value)
-  formData.append('scholarshipProgram', scholarshipProgram.value)
-  formData.append('grant', grant.value)
-  formData.append('level', level.value)
-  formData.append('availment', availment.value)
-  formData.append('scholartype', scholartype.value)
-  formData.append('entryType', entryType.value)
-  formData.append('gradschool', gradschool.value)
-  formData.append('gradcourse', gradcourse.value)
-  formData.append('yearawarded', spas_academic_year.value)
-  formData.append('usercreator', user.username)
-  formData.append('scholarid', scholarid.value)
-  formData.append('status', status.value)
-  formData.append('substatus', substatus.value)
-
-  try {
     if (isEditing.value) {
-      const [isStatusValid, isSubStatusValid] = await Promise.all([
-        refStatus.value.validate(),
-        refSubStatus.value.validate(),
-      ])
-
+      const isStatusValid = await refStatus.value.validate()
+      const isSubStatusValid = await refSubStatus.value.validate()
       if (!isStatusValid || !isSubStatusValid) {
         notifyError('Please fill all required fields')
-        return
+      } else {
+        axios.post('/scholars_function.php?updateScholarinfo', formData).then(function (response) {
+          if (response.data == true) {
+            notifySuccess('Scholar Profile Information Updated Successfully')
+          } else {
+            notifyError('Failed to Update')
+          }
+        })
+
+        axios
+          .post('/scholars_function.php?updatescholarAddress', formData)
+          .then(function (response) {
+            if (response.data == true) {
+              notifySuccess('Scholar Address Updated Successfully')
+            } else {
+              notifyError('Failed to Update')
+            }
+          })
       }
 
-      const results = await Promise.all([
-        axios.post('/scholars_function.php?updateScholarinfo', formData),
-        axios.post('/scholars_function.php?updatescholarAddress', formData),
-        axios.post('/scholars_function.php?updatescholarPrev', formData),
-        axios.post('/scholars_function.php?updateGradScholarschool', formData),
-        axios.post('/scholars_function.php?updateDateSem', formData),
-        axios.post('/scholars_function.php?updateGradThesis', formData),
-      ])
-
-      const messages = [
-        'Scholar Profile Information Updated Successfully',
-        'Scholar Address Updated Successfully',
-        'Scholar Previous School Updated Successfully',
-        'Scholar Graduate School Updated Successfully',
-        'Scholar Sem/Date Updated Successfully',
-        'Scholar Thesis Updated Successfully',
-      ]
-
-      results.forEach((res, index) => {
-        if (res.data === true) {
-          notifySuccess(messages[index])
+      axios.post('/scholars_function.php?updatescholarPrev', formData).then(function (response) {
+        if (response.data == true) {
+          notifySuccess('Scholar Previous School Updated Successfully')
         } else {
           notifyError('Failed to Update')
         }
       })
 
-      readScholars()
+      axios
+        .post('/scholars_function.php?updateGradScholarschool', formData)
+        .then(function (response) {
+          if (response.data == true) {
+            notifySuccess('Scholar Graduate School Updated Successfully')
+          } else {
+            notifyError('Failed to Update')
+          }
+        })
+
+      axios.post('/scholars_function.php?updateDateSem', formData).then(function (response) {
+        if (response.data == true) {
+          notifySuccess('Scholar Sem/Date Updated Successfully')
+        } else {
+          notifyError('Failed to Update')
+        }
+      })
+
+      axios.post('/scholars_function.php?updateGradThesis', formData).then(function (response) {
+        if (response.data == true) {
+          readScholars()
+          notifySuccess('Scholar Thesis Updated Successfully')
+        } else {
+          notifyError('Failed to Update')
+        }
+      })
     } else {
-      const response = await axios.post('/scholars_function.php?createScholar', formData)
-      if (response.data === true) {
-        readScholars()
-        notifySuccess('Scholar Created Successfully')
-      } else {
-        notifyError('Error Submitting Form')
-      }
+      axios.post('/scholars_function.php?createScholar', formData).then(function (response) {
+        if (response.data == true) {
+          readScholars()
+          notifySuccess('Scholar Created Successfully')
+        } else {
+          notifyError('Error Submitting Form')
+        }
+      })
     }
-  } catch (error) {
-    console.error(error)
-    notifyError('Something went wrong while submitting the form')
   }
 }
 
-// Batch Upload Codes
+const bulkUploads = async () => {
+  const isFileValid = await refBulkUpload.value.validate()
 
-const bulkUploads = () => {
-  rfBulkUpload.value.validate()
-
-  if (rfBulkUpload.value.hasError) {
-    notifyError('Something went wrong')
-  } else {
-    var formData = new FormData(document.getElementById('bulkUploadForm'))
-
-    formData.append('usercreator', user.username)
-    formData.append('authid', user.id)
-
-    axios.post('/scholars_function.php?bulkUpload', formData).then(function (response) {
-      if (response.data == true) {
-        docxUpload.value = false
-        notifySuccess('Batch Upload of Scholars has been uploaded Successfully')
-      } else {
-        notifyError('Something went wrong')
-      }
-    })
+  if (!isFileValid) {
+    alert('Please fill all required fields')
   }
+
+  alert('Test ME')
 }
-
-// Add Document Codes
-
-const scholar_doc_id = ref()
-const doc_description = ref()
-const currentRow = ref(null)
 
 const handleFiles = (props) => {
-  Docx.value = true
-  currentRow.value = props.row
-  var formData = new FormData()
-  scholar_doc_id.value = props.row.id
-
-  formData.append('spasid', scholar_doc_id.value)
-
-  axios.post('/scholars_function.php?docuId', formData).then(function (response) {
-    rows.value = Array.isArray(response.data) ? response.data : []
-  })
-
-  axios.get('/scholars_function.php?populatefiles').then(function (response) {
-    filetypes2 = response.data
-  })
-}
-
-var filetypes2 = []
-const filetypesOptions = ref(filetypes2)
-
-const filterFilesTypes = (val, update) => {
-  if (val === '') {
-    update(() => {
-      filetypesOptions.value = filetypes2
-    })
-    return
-  }
-
-  update(() => {
-    const needle = val.toLowerCase()
-    filetypesOptions.value = filetypes2.filter((option) => {
-      return option.label.toLowerCase().includes(needle)
-    })
-  })
-}
-
-const getDescription = () => {
-  var formData = new FormData()
-  formData.append('filetype_id', filetypes.value)
-
-  axios.post('/scholars_function.php?fileTypePopulate', formData).then(function (response) {
-    doc_description.value = response.data.name
-    console.log(doc_description.value)
-  })
-}
-
-const showFiles = (props) => {
-  const url = `http://localhost/backdbases/upload/${props.row.file_name}`
-  window.open(url, '_blank')
-}
-
-const addDocu = () => {
-  reffile.value.validate()
-  refFileTypes.value.validate()
-
-  if (refFileTypes.value.hasError || reffile.value.hasError) {
-    notifyError('Please Complete all the required fields')
-  } else {
-    var formData = new FormData(document.getElementById('editDocuForm'))
-    formData.append('filetypes', filetypes.value)
-    formData.append('files', files.value)
-    formData.append('scholar_doc_id', scholar_doc_id.value)
-    formData.append('doc_description', doc_description.value)
-    axios.post('/scholars_function.php?uploadDocx', formData).then(function (response) {
-      if (response.data == true) {
-        handleFiles({ row: currentRow.value })
-        notifySuccess('File Added Successfully')
-      } else {
-        alert('Error')
-      }
-    })
-  }
+  alert(props.row.id)
 }
 
 const newScholar = () => {
   location.reload()
-}
-
-const generatePDF = () => {
-  const doc = new jsPDF()
-
-  const logoUrl = new URL('../assets/seilogopng.png', import.meta.url).href // Replace with your image URL
-  const bpUrl = new URL('../assets/pilipinas.png', import.meta.url).href // Replace with your image URL
-  const tuvUrl = new URL('../assets/tuv.png', import.meta.url).href // Replace with your image URL
-
-  const imageCompression = 0.7
-
-  // Get Date
-  const today = new Date()
-  const formattedDate = today.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-
-  // Add the image from the URL to the PDF
-  doc.addImage(logoUrl, 'PNG', 10, 5, 20, 20, null, 'FAST', imageCompression)
-
-  // Set a title for the PDF
-
-  doc.setFontSize(10)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Republic of the Philippines', 32, 11)
-
-  doc.setFontSize(13)
-  doc.setFont('helvetica', 'bold')
-  doc.text('DEPARTMENT OF SCIENCE AND TECHNOLOGY', 32, 17)
-
-  doc.setFontSize(13)
-  doc.setFont('helvetica', 'bold')
-  doc.text('SCIENCE EDUCATION INSTITUTE', 32, 23)
-
-  // Add the image from the URL to the PDF
-  doc.addImage(bpUrl, 'PNG', 150, 5, 20, 20, null, 'FAST', imageCompression)
-  doc.addImage(tuvUrl, 'PNG', 170, 5, 33, 20, null, 'FAST', imageCompression)
-
-  doc.setLineWidth(0.5)
-  doc.line(10, 27, 203, 27) // x1, y1, x2, y2
-
-  doc.setFontSize(8)
-  doc.setFont('helvetica', 'italic')
-  doc.text('Service. Excellence. Innovation.', 10, 30)
-
-  doc.setFont('helvetica', 'normal') // Set font and style
-  doc.setFontSize(10) // Set font size
-  doc.text(`${formattedDate}`, 180, 32) // Add the date to position (10, 10)
-
-  doc.setFontSize(15)
-  doc.setFont('helvetica', 'italic')
-  doc.text('Scholarship Informations', 77, 35)
-
-  const inputX = 10
-  const inputY = 35
-  const inputWidth = 42
-  const inputHeight = 7
-
-  // Draw a rectangle (input box)
-  doc.rect(inputX, inputY, inputWidth, inputHeight)
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(9)
-  doc.text(state.spasid, inputX + 2, inputY + 5) // Adjusted to fit inside the box
-
-  doc.setFontSize(9)
-  doc.setFont('helvetica', 'normal')
-  doc.text(`Status: ${status.value} - ${substatus.value}`, 160, 38)
-  doc.text(
-    `Full Name: ${state.lastname} , ${state.firstname} ${state.middlename} ${state.suffixname}`,
-    10,
-    48,
-  )
-  doc.text(`Birthday: ${state.birth}`, 10, 51)
-
-  // Save or preview the PDF
-  const blob = doc.output('blob')
-  const url = URL.createObjectURL(blob)
-  window.open(url, '_blank')
 }
 
 onMounted(() => {

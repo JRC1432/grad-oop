@@ -10,6 +10,13 @@ export const isEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Inval
 
 export const isNumber = (val) => (!isNaN(parseFloat(val)) && isFinite(val)) || 'Must be a number'
 
+export const isFileValid = (val) => {
+  if (val === null) {
+    return 'Please select a file!'
+  }
+  return true
+}
+
 export const passwordStrength = (val) =>
   (val && val.length >= 8) || 'Password must be at least 8 characters long'
 

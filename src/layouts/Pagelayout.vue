@@ -4,7 +4,7 @@
       <!-- Apply surface-container-lowest if needed -->
       <q-toolbar class="secondarymodes">
         <q-btn flat round @click="toggleLeftDrawer" aria-label="Menu" icon="menu" />
-        <q-btn flat no-caps no-wrap class="q-ml-xs" v-if="$q.screen.gt.xs" to="/stats">
+        <q-btn flat no-caps no-wrap class="q-ml-xs" v-if="$q.screen.gt.xs" to="/dashboard">
           <q-avatar size="28px" rounded>
             <img src="../assets/seilogopng.png" />
           </q-avatar>
@@ -63,21 +63,6 @@
             </q-item-section>
 
             <q-item-section> Users </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            tag="a"
-            to="/newscholar"
-            class="rounded-borders q-my-xs"
-            active-class="my-menu-link"
-          >
-            <q-item-section avatar>
-              <q-icon name="group_add" />
-            </q-item-section>
-
-            <q-item-section> New Scholar </q-item-section>
           </q-item>
 
           <q-item

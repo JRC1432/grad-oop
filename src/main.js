@@ -23,7 +23,7 @@ import App from './App.vue'
 
 export const baseURL = import.meta.env.DEV
   ? 'http://localhost/backdbases/uses'
-  : '../backdbase/uses'
+  : '../backdbases/uses'
 
 const axios = axiosMain.create({
   baseURL,
