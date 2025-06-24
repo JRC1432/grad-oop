@@ -147,31 +147,52 @@ const readForms = () => {
   })
 }
 
-const saveFile = () => {
-  refuploadedFile.value.validate()
-  refFormName.value.validate()
+const getFormId = ref(null)
 
-  if (refuploadedFile.value.hasError || refFormName.value.hasError) {
-    notifyError('Submit Failed')
-  } else {
-    var formData = new FormData(document.getElementById('saveFileForm'))
-    formData.append('usercreator', user.username)
-    formData.append('userid', user.id)
-    formData.append('uploadedFile', uploadedFile.value)
+const editFiles = (props) => {
+  isEditing.value = true
+  getFormId.value = props.row.id
+  newForms.value = true
 
-    axios.post('/forms_function.php?createForms', formData).then(function (response) {
-      if (response.data == true) {
-        newForms.value = false
-        readForms()
-        uploadedFile.value = null
-        state.form_name = null
-        notifySuccess('Form Uploaded Successfully')
-      } else {
-        notifyError('Failed to upload Form')
-        uploadedFile.value = null
-        state.form_name = null
-      }
-    })
+  state.form_name = props.row.form_name
+}
+
+const saveFile = async () => {
+  const uploadedFileValid = await refuploadedFile.value.validate()
+  const formNameValid = await refFormName.value.validate()
+
+  if (!uploadedFileValid || !formNameValid) {
+    notifyError('Submit Failed. Please fill all required fields and ensure the file is valid.')
+    return
+  }
+
+  const formData = new FormData(document.getElementById('saveFileForm'))
+  formData.append('usercreator', user.username)
+  formData.append('userid', user.id)
+  formData.append('uploadedFile', uploadedFile.value)
+  formData.append('formid', getFormId.value)
+
+  try {
+    let response
+    if (isEditing.value) {
+      response = await axios.post('/forms_function.php?updateForms', formData)
+    } else {
+      response = await axios.post('/forms_function.php?createForms', formData)
+    }
+
+    if (response.data === true) {
+      notifySuccess(isEditing.value ? 'Form Updated Successfully' : 'Form Uploaded Successfully')
+      newForms.value = false
+      readForms()
+    } else {
+      notifyError(isEditing.value ? 'Failed to update Form' : 'Failed to upload Form')
+    }
+
+    uploadedFile.value = null
+    state.form_name = null
+  } catch (error) {
+    notifyError('An error occurred during submission')
+    console.error(error)
   }
 }
 
@@ -179,9 +200,7 @@ const handleRowClick = (evt, row) => {
   const url = `http://localhost/backdbases/${row.file_path}`
   window.open(url, '_blank')
 }
-const editFiles = (props) => {
-  console.log(props.row.id)
-}
+
 const deleteFiles = (props) => {
   var formData = new FormData()
 

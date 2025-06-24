@@ -145,7 +145,7 @@
 </template>
 <script setup>
 import DarkMode from '../components/DarkMode.vue'
-// import Notify from '../components/Notify.vue'
+import Notify from '../components/Notify.vue'
 import UploadPic from '../components/UploadPic.vue'
 import { ref, inject, reactive, onMounted } from 'vue'
 

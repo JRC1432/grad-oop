@@ -786,6 +786,22 @@
             <q-card-section class="bg-primary text-white">
               <div class="text-h6">Upload Your File Here</div>
               <div class="text-subtitle2">Only CSV Documents are Allowed</div>
+              <div class="justify-end row">
+                <q-btn
+                  color="secondary"
+                  size="10px"
+                  no-caps
+                  round
+                  icon="download"
+                  tag="a"
+                  href="/assets/Graduate_BulkUpload.csv"
+                  target="_blank"
+                >
+                  <q-tooltip class="bg-accentmodes"
+                    >Download Scholars Records Batch Upload</q-tooltip
+                  >
+                </q-btn>
+              </div>
             </q-card-section>
             <div class="q-pa-md">
               <q-file
@@ -930,6 +946,10 @@ const rows = ref([])
 const onrows = ref([])
 const gradrows = ref([])
 const termrows = ref([])
+const isNew = ref('Create')
+const isUpdate = ref('Update')
+const isDelete = ref('Delete')
+const isUploaded = ref('Upload')
 
 // Ref Declarations
 
@@ -1701,6 +1721,7 @@ const submitScholar = async () => {
   formData.append('scholarid', scholarid.value)
   formData.append('status', status.value)
   formData.append('substatus', substatus.value)
+  formData.append('usercreator', user.username)
 
   try {
     if (isEditing.value) {
@@ -1742,13 +1763,35 @@ const submitScholar = async () => {
 
       readScholars()
     } else {
-      const response = await axios.post('/scholars_function.php?createScholar', formData)
-      if (response.data === true) {
-        readScholars()
-        notifySuccess('Scholar Created Successfully')
-      } else {
-        notifyError('Error Submitting Form')
-      }
+      formData.append('action_type_create', isNew.value)
+
+      axios
+        .post('/scholars_function.php?createScholar', formData)
+        .then(function (response) {
+          if (response.data === true) {
+            readScholars()
+            notifySuccess('Scholar Created Successfully')
+
+            // Log request without try/catch
+            axios
+              .post('/logs_function.php?scholarLogs', formData)
+              .then(function (logResponse) {
+                if (logResponse.data !== true) {
+                  notifyError('Scholar Logs Creation Failed')
+                }
+              })
+              .catch(function (logError) {
+                console.error('Log Request Error:', logError)
+                notifyError('An unexpected error occurred during logging')
+              })
+          } else {
+            notifyError('Error Submitting Form')
+          }
+        })
+        .catch(function (error) {
+          console.error('Request Error:', error)
+          notifyError('An unexpected error occurred')
+        })
     }
   } catch (error) {
     console.error(error)
@@ -1768,9 +1811,16 @@ const bulkUploads = () => {
 
     formData.append('usercreator', user.username)
     formData.append('authid', user.id)
+    formData.append('action_type_create', isNew.value)
 
     axios.post('/scholars_function.php?bulkUpload', formData).then(function (response) {
       if (response.data == true) {
+        axios.post('/logs_function.php?batchLogs', formData).then(function (logResponse) {
+          if (logResponse.data !== true) {
+            notifyError('Scholar Logs Creation Failed')
+          }
+        })
+
         docxUpload.value = false
         notifySuccess('Batch Upload of Scholars has been uploaded Successfully')
       } else {

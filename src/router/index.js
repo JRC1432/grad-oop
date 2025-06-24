@@ -29,6 +29,7 @@ const router = createRouter({
           path: '/dashboard',
           name: 'dashboard',
           component: DashboardView,
+          meta: { access_level: 1 },
         },
         {
           path: '/users',

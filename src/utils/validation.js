@@ -17,6 +17,9 @@ export const isFileValid = (val) => {
   return true
 }
 
+export const isMultiSelected = (val) =>
+  (Array.isArray(val) && val.length > 0) || 'Please input at least one entry'
+
 export const passwordStrength = (val) =>
   (val && val.length >= 8) || 'Password must be at least 8 characters long'
 

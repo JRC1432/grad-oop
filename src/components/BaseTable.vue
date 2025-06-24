@@ -19,10 +19,10 @@
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <q-btn flat rounded class="bi bi-info-circle" color="blue-11" @click="showedit(props)">
-          <IconUserEdit :size="30" stroke-width="2" />
+          <IconEdit :size="30" stroke-width="2" />
         </q-btn>
         <q-btn flat rounded class="bi bi-info-circle" color="red-5" @click="showdel(props)">
-          <IconUserMinus :size="30" stroke-width="2" />
+          <IconTrashX :size="30" stroke-width="2" />
         </q-btn>
       </q-td>
     </template>
@@ -31,7 +31,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { IconUserEdit, IconUserMinus } from '@tabler/icons-vue'
+import { IconEdit, IconTrashX } from '@tabler/icons-vue'
 
 const props = defineProps({
   rows: {

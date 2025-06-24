@@ -23,8 +23,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  base: '/graduateoop',
+  base: '/graduate',
   build: {
-    outDir: './graduateoop',
+    outDir: './graduate',
   },
 })

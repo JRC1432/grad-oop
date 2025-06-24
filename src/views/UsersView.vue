@@ -175,6 +175,9 @@ const refuserlevel = ref(null)
 const isEditing = ref(false)
 const editingUserId = ref(null)
 const userlevel = ref(null)
+const isNew = ref('Create')
+const isUpdate = ref('Update')
+const isDelete = ref('Delete')
 
 const state = reactive({
   firstname: '',
@@ -302,6 +305,7 @@ const saveUser = async () => {
 
     if (isEditing.value) {
       formData.append('userid', editingUserId.value)
+      formData.append('action_type_update', isUpdate.value)
       axios.post('/users_function.php?updateuser', formData).then((response) => {
         if (response.data == true) {
           notifySuccess('User Updated Successfully')
@@ -312,7 +316,15 @@ const saveUser = async () => {
           notifyError('User Update Failed')
         }
       })
+      axios.post('/logs_function.php?userLogs', formData).then(function (response) {
+        if (response.data == true) {
+          return
+        } else {
+          notifyError('User Logs Creation Failed')
+        }
+      })
     } else {
+      formData.append('action_type_create', isNew.value)
       axios.post('/users_function.php?createuser', formData).then(function (response) {
         if (response.data == true) {
           state.username = ''
@@ -323,6 +335,14 @@ const saveUser = async () => {
           notifySuccess('New User Created Successfully')
         } else {
           notifyError('New User Creation Failed')
+        }
+      })
+
+      axios.post('/logs_function.php?userLogs', formData).then(function (response) {
+        if (response.data == true) {
+          return
+        } else {
+          notifyError('User Logs Creation Failed')
         }
       })
     }
@@ -338,7 +358,8 @@ const handleDelete = (props) => {
   }).onOk(() => {
     var formData = new FormData()
     formData.append('userid', props.row.id)
-    // notifySuccess('User Deleted Successfully')
+    formData.append('action_type_delete', isDelete.value)
+    formData.append('creator', user.username)
 
     axios.post('/users_function.php?deleteuser', formData).then(function (response) {
       if (response.data == true) {
@@ -346,6 +367,13 @@ const handleDelete = (props) => {
         notifySuccess('User Deleted Successfully')
       } else {
         notifyError('User Deletion Failed')
+      }
+    })
+    axios.post('/logs_function.php?userLogs', formData).then(function (response) {
+      if (response.data == true) {
+        return
+      } else {
+        notifyError('User Logs Creation Failed')
       }
     })
   })
